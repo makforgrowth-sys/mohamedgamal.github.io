@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mohamed Ahmed Gamal — Media Buyer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --accent: #4f8dff;
+      --accent2: #a78bfa;
+      --text: #f0f0f5;
+      --muted: #8888aa;
+      --border: rgba(255,255,255,0.07);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* GLOW BLOBS */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob-1 { width: 500px; height: 500px; background: rgba(79,141,255,0.08); top: -100px; right: -100px; }
+    .blob-2 { width: 400px; height: 400px; background: rgba(167,139,250,0.06); bottom: 20%; left: -150px; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 20px 40px;
+      display: flex; justify-content: space-between; align-items: center;
+      backdrop-filter: blur(20px);
+      background: rgba(10,10,15,0.7);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 400;
+      transition: color 0.2s;
+      letter-spacing: 0.3px;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 40px 80px;
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .hero-content { max-width: 700px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(79,141,255,0.1);
+      border: 1px solid rgba(79,141,255,0.25);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+      margin-bottom: 32px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero-badge::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    h1 .gradient {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-desc {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 520px;
+      margin-bottom: 40px;
+      animation: fadeUp 0.6s 0.2s ease both;
+      line-height: 1.7;
+    }
+    .hero-cta {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.92rem;
+      transition: all 0.2s;
+      letter-spacing: 0.2px;
+    }
+    .btn-primary:hover { background: #6aa0ff; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(79,141,255,0.3); }
+    .btn-secondary {
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 14px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 400;
+      font-size: 0.92rem;
+      transition: all 0.2s;
+      background: transparent;
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); }
+
+    .hero-stats {
+      display: flex; gap: 40px; margin-top: 60px;
+      animation: fadeUp 0.6s 0.4s ease both;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text);
+      display: block;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--muted); }
+
+    /* SECTIONS */
+    section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 100px 40px;
+      position: relative; z-index: 1;
+    }
+    .section-tag {
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-bottom: 12px;
+      display: block;
+    }
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 48px;
+      line-height: 1.15;
+    }
+
+    /* SERVICES */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .service-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .service-card:hover { border-color: rgba(79,141,255,0.25); transform: translateY(-4px); }
+    .service-card:hover::before { opacity: 1; }
+    .service-icon {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .service-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
+    }
+    .service-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.65; }
+
+    /* SKILLS */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .skill-pill {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex; align-items: center; gap: 14px;
+      transition: all 0.2s;
+    }
+    .skill-pill:hover { border-color: rgba(79,141,255,0.3); background: rgba(79,141,255,0.05); }
+    .skill-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+    .skill-pill span { font-size: 0.9rem; font-weight: 400; color: var(--text); }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .about-text p {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+    .about-text p strong { color: var(--text); font-weight: 500; }
+    .about-cards { display: flex; flex-direction: column; gap: 16px; }
+    .about-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 28px;
+      display: flex; align-items: flex-start; gap: 16px;
+    }
+    .about-card-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .about-card h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .about-card p { color: var(--muted); font-size: 0.85rem; line-height: 1.5; }
+
+    /* CONTACT */
+    .contact-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 64px;
+      text-align: center;
+    }
+    .contact-section h2 { margin-bottom: 16px; }
+    .contact-section p { color: var(--muted); max-width: 460px; margin: 0 auto 40px; font-size: 1rem; }
+    .contact-links {
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 16px;
+    }
+    .contact-link {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 24px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .contact-link:hover { border-color: rgba(79,141,255,0.4); color: var(--accent); transform: translateY(-2px); }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      border-top: 1px solid var(--border);
+      position: relative; z-index: 1;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      section { padding: 70px 24px; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .hero-stats { gap: 24px; }
+      .contact-section { padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">MAG<span>.</span></div>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">Available for Internships & Freelance</div>
+      <h1>I run ads that<br/><span class="gradient">actually convert.</span></h1>
+      <p class="hero-desc">
+        Media buyer specializing in Facebook & Instagram paid advertising for e-commerce businesses. Based in Tanta, Egypt — helping brands grow through data-driven ad strategies.
+      </p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn-primary">Get in Touch</a>
+        <a href="#services" class="btn-secondary">See What I Do →</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <span class="stat-num">225+</span>
+          <span class="stat-label">Leads Generated</span>
+        </div>
+        <div>
+          <span class="stat-num">6 EGP</span>
+          <span class="stat-label">Cost Per Lead</span>
+        </div>
+        <div>
+          <span class="stat-num">2</span>
+          <span class="stat-label">Platforms Mastered</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <span class="section-tag">What I offer</span>
+    <h2>Services</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="service-icon">🎯</span>
+        <h3>Facebook Ads Management</h3>
+        <p>Full campaign setup, audience research, creative strategy, and ongoing optimization to maximize your ROAS.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">📸</span>
+        <h3>Instagram Advertising</h3>
+        <p>Feed and story ads designed to stop the scroll and drive traffic, sales, or leads for your online store.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">📊</span>
+        <h3>Campaign Audits</h3>
+        <p>I'll review your existing ads account and show you exactly what's hurting your results — and how to fix it.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🛒</span>
+        <h3>E-commerce Growth</h3>
+        <p>Specialized in helping Egyptian online stores scale their sales through targeted paid social campaigns.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <span class="section-tag">Tools & Expertise</span>
+    <h2>Skills</h2>
+    <div class="skills-grid">
+      <div class="skill-pill"><span class="skill-dot"></span><span>Facebook Ads Manager</span></div>
+      <div class="skill-pill"><span class="skill-dot"></span><span>Instagram Advertising</span></div>
+      <div class="skill-pill"><span class="skill-dot"></span><span>Audience Targeting</span></div>
+      <div class="skill-pill"><span class="skill-dot"></span><span>ROAS Optimization</span></div>
+      <div class="skill-pill"><span class="skill-dot"></span><span>Lead Generation</span></div>
+      <div class="skill-pill"><span class="skill-dot"></span><span>Ad Copywriting</span></div>
+      <div class="skill-pill"><span class="skill-dot"></span><span>Campaign Analytics</span></div>
+      <div class="skill-pill"><span class="skill-dot"></span><span>E-commerce Ads</span></div>
+      <div class="skill-pill"><span class="skill-dot"></span><span>Lookalike Audiences</span></div>
+      <div class="skill-pill"><span class="skill-dot"></span><span>A/B Testing</span></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <span class="section-tag">Who I am</span>
+    <h2>About Me</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          I'm <strong>Mohamed Ahmed Gamal</strong>, a 17-year-old self-taught media buyer from Tanta, Egypt. I started my journey in paid advertising because I genuinely believe the right ad, shown to the right person, at the right time, can transform a business.
+        </p>
+        <p>
+          I specialize in <strong>Facebook and Instagram ads for e-commerce</strong> businesses. I've managed campaigns, analyzed performance data, and constantly push myself to learn the latest strategies in performance marketing.
+        </p>
+        <p>
+          I'm currently looking for <strong>internship opportunities</strong> where I can grow, contribute, and prove that results matter more than age.
+        </p>
+      </div>
+      <div class="about-cards">
+        <div class="about-card">
+          <span class="about-card-icon">📍</span>
+          <div>
+            <h4>Location</h4>
+            <p>Tanta, Gharbia, Egypt — open to remote work worldwide</p>
+          </div>
+        </div>
+        <div class="about-card">
+          <span class="about-card-icon">🎓</span>
+          <div>
+            <h4>Education</h4>
+            <p>High School Graduate + self-taught via Meta Blueprint & online courses</p>
+          </div>
+        </div>
+        <div class="about-card">
+          <span class="about-card-icon">🚀</span>
+          <div>
+            <h4>Goal</h4>
+            <p>To help e-commerce brands scale profitably through paid social advertising</p>
+          </div>
+        </div>
+        <div class="about-card">
+          <span class="about-card-icon">🌍</span>
+          <div>
+            <h4>Languages</h4>
+            <p>Arabic (Native) · English (Intermediate)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-section">
+      <span class="section-tag">Let's work together</span>
+      <h2>Get In Touch</h2>
+      <p>Whether you need help with your ads or want to offer an internship — I'd love to hear from you.</p>
+      <div class="contact-links">
+        <a href="mailto:makforgrowth@gmail.com" class="contact-link">
+          <span>📧</span> makforgrowth@gmail.com
+        </a>
+        <a href="tel:+201034550218" class="contact-link">
+          <span>📱</span> +20 1034550218
+        </a>
+        <a href="https://www.linkedin.com/in/mohamed-ahmed-gamal" target="_blank" class="contact-link">
+          <span>💼</span> LinkedIn
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Mohamed Ahmed Gamal · Media Buyer · Tanta, Egypt</p>
+  </footer>
+
+</body>
+</html>
